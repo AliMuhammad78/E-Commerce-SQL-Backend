@@ -3,7 +3,7 @@
 
 <p align="center">
 
-  <img src="public/ecommerce.png" alt="E-Commerce" width="120">
+   
 
   <h1 align="center">E-Commerce SQL Node Express</h1>
 
