@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User</title>
+    <link rel="icon" type="image/png" href="ecommerce.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        
+        main{ 
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            background-color: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+        }
+
+        .alert.error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <nav class="navbar">
+        <div class="nav-logo">MyStore</div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="Add_user.html">Sign up</a></li>
+          <!-- <li><a href="Add_product.html">Add Product</a></li>
+          <li><a href="update_product.html">Update Stock</a></li> -->
+          <li><a href="product_view.html">View Products</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+    <div class="container">
+        <h1>  New User</h1>
+        <form id="add-user-form">
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="phone-number">Phone Number:</label>
+                <input type="text" id="phone-number" name="phone-number" required>
+            </div>
+            <button type="submit">Add User</button>
+        </form>
+        <div id="alert-message" class="alert" style="display:none;"></div>
+    </div>
+</main>
+
+    <script>
+        document.getElementById("add-user-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value;
+            const phoneNumber = document.getElementById("phone-number").value;
+
+            // Send the data to the backend
+            fetch("/api/add-user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    email,
+                    phoneNumber,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const alertMessage = document.getElementById("alert-message");
+                if (data.success) {
+                    alertMessage.textContent = "User added successfully!";
+                    alertMessage.className = "alert success";
+                    alertMessage.style.display = "block";
+                    document.getElementById("add-user-form").reset();
+                } else {
+                    alertMessage.textContent = "There was an error adding the user.";
+                    alertMessage.className = "alert error";
+                    alertMessage.style.display = "block";
+                }
+            })
+            .catch(error => {
+                const alertMessage = document.getElementById("alert-message");
+                alertMessage.textContent = "There was an error: " + error.message;
+                alertMessage.className = "alert error";
+                alertMessage.style.display = "block";
+            });
+        });
+    </script>
+
+</body>
+</html>

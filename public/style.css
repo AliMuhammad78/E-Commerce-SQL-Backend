@@ -1,0 +1,111 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+  }
+  .nav-links li a:hover {
+    background-color: #e74c3c;
+  }
+  
+  /* Welcome Section */
+  .welcome-section {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    color: white;
+  }
+  .welcome-section h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  .welcome-section p {
+    font-size: 18px;
+  }
+  
+  /* Feature Sections */
+  .feature-section {
+    margin: 50px auto;
+    max-width: 1000px;
+    padding: 0 20px;
+  }
+  .feature-section h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+  }
+  
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    text-align: center;
+    width: 200px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #2c3e50;
+    transition: 0.3s;
+  }
+  .card:hover {
+    background-color: #e74c3c;
+    color: white;
+    transform: translateY(-5px);
+  }
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .product-name {
+    color: #007acc;      /* Pick any color you like */
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }  
+  .product-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    transition: transform 0.2s ease;
+  }
+  
+  .product-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Product</title>
+  <link rel="icon" type="image/png" href="ecommerce.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 0;
+      margin: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">MyStore</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="Add_user.html">Sign up</a></li>
+      <!-- <li><a href="Add_product.html">Add Product</a></li>
+      <li><a href="update_product.html">Update Stock</a></li> -->
+      <li><a href="product_view.html">View Products</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <h1>Update Product</h1>
+  
+  </header>
+
+  <div class="container">
+    <h2>Select a product to update</h2>
+    
+    <label for="productSelect">Choose Product</label>
+    <select id="productSelect">
+      <option value="">-- Select Product --</option>
+    </select>
+
+    <form id="updateForm">
+      <label for="name">Product Name</label>
+      <input type="text" id="name" required>
+
+      <label for="description">Description</label>
+      <textarea id="description" rows="3" required></textarea>
+
+      <label for="price">Price</label>
+      <input type="number" id="price" required>
+
+      <label for="stock">Stock</label>
+      <input type="number" id="stock" required>
+
+      <button type="submit">Update Product</button>
+    </form>
+
+    <div class="message" id="msgBox"></div>
+  </div>
+
+  <script>
+    let selectedProductId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const select = document.getElementById("productSelect");
+      const nameInput = document.getElementById("name");
+      const descInput = document.getElementById("description");
+      const priceInput = document.getElementById("price");
+      const stockInput = document.getElementById("stock");
+      const form = document.getElementById("updateForm");
+      const msgBox = document.getElementById("msgBox");
+
+      // Fetch all products
+      fetch("http://localhost:3000/api/products")
+        .then(res => res.json())
+        .then(products => {
+          products.forEach(p => {
+            const option = document.createElement("option");
+            option.value = p.ProductID;
+            option.textContent = `${p.ProductName} (ID: ${p.ProductID})`;
+            select.appendChild(option);
+          });
+
+          // Handle product selection
+          select.addEventListener("change", () => {
+            const selectedId = select.value;
+            const product = products.find(p => p.ProductID == selectedId);
+            if (product) {
+              selectedProductId = product.ProductID;
+              nameInput.value = product.ProductName;
+              descInput.value = product.Descript;
+              priceInput.value = product.Price;
+              stockInput.value = product.StockQuantity;
+              msgBox.textContent = '';
+            }
+          });
+        });
+
+      // Handle form submission
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        if (!selectedProductId) {
+          msgBox.textContent = "Please select a product to update.";
+          msgBox.className = "message error";
+          return;
+        }
+
+        const updatedProduct = {
+          name: nameInput.value,
+          description: descInput.value,
+          price: priceInput.value,
+          stock: stockInput.value
+        };
+
+        fetch(`http://localhost:3000/api/update-product/${selectedProductId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(updatedProduct)
+        })
+        .then(res => {
+          if (res.ok) {
+            msgBox.textContent = "✅ Product updated successfully!";
+            msgBox.className = "message";
+          } else {
+            msgBox.textContent = "❌ Failed to update product.";
+            msgBox.className = "message error";
+          }
+        })
+        .catch(err => {
+          console.error("Error updating:", err);
+          msgBox.textContent = "❌ Error connecting to server.";
+          msgBox.className = "message error";
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

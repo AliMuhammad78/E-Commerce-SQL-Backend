@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Users</title>
+  <link rel="icon" type="image/png" href="ecommerce.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    header .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    header .icons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    header .icons i {
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .user-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .user-card {
+      background-color: #f9f9f9;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .user-card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    .user-card p {
+      margin: 0.5rem 0;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body data-page="view-users">
+  <header>
+    <nav class="navbar">
+      <div class="nav-logo">MyStore</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Add_user.html">Sign up</a></li>
+        <!-- <li><a href="add-product.html">Add Product</a></li>
+        <li><a href="update_product.html">Update Stock</a></li> -->
+        <li><a href="product_view.html">View Products</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>View Customers</h1>
+    <div class="container">
+      <h2>All Customers</h2>
+      <div id="user-list" class="user-list"></div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Fetch users from the backend
+      fetch("http://localhost:5500/api/users")
+        .then(response => response.json())
+        .then(data => {
+          const userList = document.getElementById("user-list");
+          if (data.length > 0) {
+            data.forEach(user => {
+              const userCard = document.createElement("div");
+              userCard.className = "user-card";
+              userCard.innerHTML = `
+                <h3>${user.Username}</h3>
+                <p><strong>Email:</strong> ${user.Email}</p>
+                <p><strong>Phone:</strong> ${user.PhoneNumber}</p>
+              `;
+              userList.appendChild(userCard);
+            });
+          } else {
+            userList.innerHTML = "<p>No users found.</p>";
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching users:", error);
+          alert("❌ Error loading users");
+        });
+    });
+  </script>
+  
+</body>
+</html>

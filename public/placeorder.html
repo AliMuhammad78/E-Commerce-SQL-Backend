@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link rel="icon" type="image/png" href="ecommerce.png">
+      <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button-container {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Place Order</h2>
+    <form id="orderForm">
+        <div class="form-group">
+            <label for="userID">User ID</label>
+            <input type="number" id="userID" required>
+        </div>
+        <div class="form-group">
+            <label for="productID">Product ID</label>
+            <input type="number" id="productID" required min="1">
+            <!-- <select id="productID" required> -->
+                <!-- <option value="">Select Product</option> -->
+                <!-- Product options will be populated dynamically -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" required min="1">
+        </div>
+        <div class="form-group">
+            <label for="totalAmount">Total Amount</label>
+            <input type="number" id="totalAmount" required readonly>
+        </div>
+        <div class="button-container">
+            <button type="submit">Place Order</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Fetch products and populate dropdown
+    async function fetchProducts() {
+        const response = await fetch('/get-products');
+        const products = await response.json();
+        const productSelect = document.getElementById('productID');
+        
+        products.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.ProductID;
+            option.textContent = product.ProductName;
+            productSelect.appendChild(option);
+        });
+    }
+
+    fetchProducts();
+
+    // Handle form submission
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const userID = document.getElementById('userID').value;
+        const productID = document.getElementById('productID').value;
+        const quantity = document.getElementById('quantity').value;
+        const totalAmount = document.getElementById('totalAmount').value;
+
+        const orderData = {
+            UserID: userID,
+            ProductID: productID,
+            Quantity: quantity,
+            TotalAmount: totalAmount
+        };
+
+        // Send order data to server
+        const response = await fetch('/place-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        if (response.ok) {
+            alert("Order placed successfully!");
+        } else {
+            alert("Failed to place order. Try again.");
+        }
+    });
+
+    // Update total amount based on quantity and product price
+    document.getElementById('quantity').addEventListener('input', async function() {
+        const productID = document.getElementById('productID').value;
+        const quantity = document.getElementById('quantity').value;
+
+        if (productID && quantity) {
+            const response = await fetch(`/get-product-price/${productID}`);
+            const product = await response.json();
+            const totalAmount = (product.Price * quantity).toFixed(2);
+            document.getElementById('totalAmount').value = totalAmount;
+        }
+    });
+</script>
+
+</body>
+</html>
